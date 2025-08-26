@@ -15,4 +15,5 @@ namespace iot_home_automation_backend.Data
 
     }
 
+
 }

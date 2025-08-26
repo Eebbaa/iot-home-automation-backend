@@ -7,8 +7,8 @@ namespace iot_home_automation_backend.Models
         // Since User already has an Id property from IdentityUser, we don't need to redefine it here.
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
-        public string FullName { get; set; } // custom field
-        public ICollection<Device> Devices { get; set; }
+        public string FullName { get; set; } 
+        public ICollection<Device>? Devices { get; set; }
 
 
 
