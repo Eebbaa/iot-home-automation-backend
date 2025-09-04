@@ -128,7 +128,7 @@ namespace iot_home_automation_backend.Controllers.API.Version1
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            if(!string.IsNullOrWhiteSpace(id))
+            if(string.IsNullOrWhiteSpace(id))
                 return BadRequest(new {message = "User ID cannot be empty."});
 
             var user = await _context.Users.FindAsync(id);
