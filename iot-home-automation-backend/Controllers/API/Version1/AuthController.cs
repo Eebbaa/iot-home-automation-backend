@@ -38,7 +38,8 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             {
                 // Optionally, you can sign in the user immediately after registration
                 // await _signInManager.SignInAsync(user, isPersistent: false);
-                return Ok(new { Message = "User registered successfully" });
+                return Ok(new AuthResponseDto{ Message = "User registered successfully" });
+                
             }
             foreach (var error in result.Errors)
             {
@@ -58,11 +59,13 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                return Ok(new { Message = "User logged in successfully" });
+                return Ok(new AuthResponseDto { Message = "User logged in successfully" });
+              
             }
             else
             {
-                return Unauthorized(new { Message = "Invalid login attempt" });
+               return Unauthorized(new AuthResponseDto { Message = "Invalid login attempt" });
+               
             }
         }
 
