@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore. Identity;
+﻿using iot_home_automation_backend.DTOs.Auth;
 using iot_home_automation_backend.Models;
-using iot_home_automation_backend.DTOs.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore. Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 namespace iot_home_automation_backend.Controllers.API.Version1
 {
     [Route("api/v1/[controller]")]
@@ -12,10 +16,13 @@ namespace iot_home_automation_backend.Controllers.API.Version1
 
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly IConfiguration _configuration;
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _configuration = configuration;
+
         }
 
         // POST: api/v1/auth/register
@@ -57,20 +64,30 @@ namespace iot_home_automation_backend.Controllers.API.Version1
                 return BadRequest(ModelState);
             }
             var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, isPersistent: false, lockoutOnFailure: false);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                return Ok(new AuthResponseDto { Message = "User logged in successfully" });
-              
+
+                //return Ok(new AuthResponseDto { Message = "User logged in successfully" });
+                return Unauthorized(new { Message = "Invalid login attempt." });
             }
-            else
+            //else
+            //{
+            //   return Unauthorized(new AuthResponseDto { Message = "Invalid login attempt" });
+
+            //}
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var token = await GenerateJwtToken(user);
+
+            return Ok(new AuthResponseDto
             {
-               return Unauthorized(new AuthResponseDto { Message = "Invalid login attempt" });
-               
-            }
+                Message = "User logged in successfully",
+                Token = token
+            });
         }
 
         //POST: api/v1/auth/logout
         [HttpPost("logout")]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             try
@@ -86,10 +103,38 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             }
         }
 
-        
-        
+        private async Task<string> GenerateJwtToken(User user)
+        {
+            var claims = new List<Claim>
+            {   
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.FullName ?? user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            
+            var creds = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: null,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(
+                         Convert.ToDouble(_configuration["Jwt:ExpireMinutes"])
+                ),
+                 
+                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+
+        }
+
 
         
+
 
     }
 }
