@@ -69,6 +69,23 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             }
         }
 
+        //POST: api/v1/auth/logout
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                await _signInManager.SignOutAsync();
+                return Ok(new AuthResponseDto { Message = $"User logged out successfully" });
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new AuthResponseDto { Message=$"Logout failed: {ex.Message}"});
+
+            }
+        }
+
         
         
 
