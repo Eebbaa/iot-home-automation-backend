@@ -103,6 +103,57 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             }
         }
 
+
+        // password recovery needs
+        // 1. forget password-->
+        // 2.send token to email--->
+        // 3. Reset password by using valid token
+
+        //POST: api/v1/auth/forgot-password
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+        {
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ModelState); 
+            }
+
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null)
+                return NotFound(new AuthResponseDto { Message = "User with this email does not exist."});
+            
+            //generate password resety token
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            return Ok(new AuthResponseDto { Message = "Password reset token generated successfully.", Token = token });
+        
+        }
+
+        // POST: api/v1/auth/reset-password
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+
+            if (user == null)
+                return NotFound(new AuthResponseDto { Message ="User not found." });
+
+            var result = await _userManager.ResetPasswordAsync(user, dto.Token,dto.NewPassword);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new AuthResponseDto { Message = "Password reset failed.", Errors = result.Errors.Select(e =>e.Description)});
+            }
+
+            return Ok(new AuthResponseDto { Message = "Password reset successfully." });
+
+        }
+
+
         private async Task<string> GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
