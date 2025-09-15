@@ -17,12 +17,21 @@ namespace iot_home_automation_backend.Controllers.API.Version1
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
+        private UserManager<User> object1;
+        private SignInManager<User> object2;
+
         public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
 
+        }
+
+        public AuthController(UserManager<User> object1, SignInManager<User> object2)
+        {
+            this.object1 = object1;
+            this.object2 = object2;
         }
 
         // POST: api/v1/auth/register
@@ -68,7 +77,7 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             {
 
                 //return Ok(new AuthResponseDto { Message = "User logged in successfully" });
-                return Unauthorized(new { Message = "Invalid login attempt." });
+                return Unauthorized(new  AuthResponseDto{ Message = "Invalid login attempt" });
             }
             //else
             //{
