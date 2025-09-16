@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Device\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
