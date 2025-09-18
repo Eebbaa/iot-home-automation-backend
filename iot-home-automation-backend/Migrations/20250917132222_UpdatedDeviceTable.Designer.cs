@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using iot_home_automation_backend.Data;
 
@@ -11,9 +12,11 @@ using iot_home_automation_backend.Data;
 namespace iot_home_automation_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250917132222_UpdatedDeviceTable")]
+    partial class UpdatedDeviceTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,9 +160,8 @@ namespace iot_home_automation_backend.Migrations
 
             modelBuilder.Entity("iot_home_automation_backend.Models.Device", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -174,15 +176,13 @@ namespace iot_home_automation_backend.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Devices");
                 });
@@ -198,8 +198,8 @@ namespace iot_home_automation_backend.Migrations
                     b.Property<int>("DeviceId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("DeviceId1")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("DeviceId1")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -347,7 +347,9 @@ namespace iot_home_automation_backend.Migrations
                 {
                     b.HasOne("iot_home_automation_backend.Models.User", "User")
                         .WithMany("Devices")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -356,9 +358,7 @@ namespace iot_home_automation_backend.Migrations
                 {
                     b.HasOne("iot_home_automation_backend.Models.Device", "Device")
                         .WithMany("DeviceReadings")
-                        .HasForeignKey("DeviceId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DeviceId1");
 
                     b.Navigation("Device");
                 });
