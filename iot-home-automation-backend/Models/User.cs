@@ -2,7 +2,7 @@
 
 namespace iot_home_automation_backend.Models
 {
-    public class User : IdentityUser
+    public class User : IdentityUser<Guid>
     {
         // Since User already has an Id property from IdentityUser, we don't need to redefine it here.
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

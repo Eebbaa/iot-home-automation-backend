@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using iot_home_automation_backend.DTOs.Device;
+using iot_home_automation_backend.Models;
 namespace iot_home_automation_backend.Controllers.API.Version1
 {
     
@@ -49,7 +50,7 @@ namespace iot_home_automation_backend.Controllers.API.Version1
                 {
                     return BadRequest();
                 }
-                var newDevice = new Models.Device
+                var newDevice = new Device
                 {
                     UserId = device.UserId,
                     DeviceName = device.DeviceName,
@@ -59,7 +60,18 @@ namespace iot_home_automation_backend.Controllers.API.Version1
                 };
                 _context.Devices.Add(newDevice);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetDevice), new { id = newDevice.Id }, device);
+                // Return the new created device with its Id
+                var resultDto = new DeviceDto
+                {
+                    Id = newDevice.Id,
+                    DeviceName = newDevice.DeviceName,
+                    Type = newDevice.Type,
+                    Status = newDevice.Status,
+                    CreatedAt = newDevice.CreatedAt
+                };
+                
+               return CreatedAtAction(nameof(GetDevice), new { id = newDevice.Id }, resultDto);
+            
             }
 
 

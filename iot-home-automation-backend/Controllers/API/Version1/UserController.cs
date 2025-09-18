@@ -56,7 +56,9 @@ namespace iot_home_automation_backend.Controllers.API.Version1
                     return BadRequest();
                 }
 
-                var user = await _context.Users.Where(u => u.Id == id)
+
+                var guidId = Guid.Parse(id);   // Throws if invalid
+                var user = await _context.Users.Where(u => u.Id == guidId)
                     .Select(u => new UserDto
                     {
                         FullName = u.FullName,
