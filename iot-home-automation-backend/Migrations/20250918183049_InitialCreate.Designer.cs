@@ -12,8 +12,8 @@ using iot_home_automation_backend.Data;
 namespace iot_home_automation_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250918163547_Update-User-Device-DeviceReadingTables")]
-    partial class UpdateUserDeviceDeviceReadingTables
+    [Migration("20250918183049_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
