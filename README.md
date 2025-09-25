@@ -60,3 +60,8 @@ Prerequisites
 SQL Server or PostgreSQL
 
 (Optional) Docker
+
+
+Documentation for the project is on Confluence 
+  - https://leiprojects2030.atlassian.net/wiki/x/DgCqAw
+
