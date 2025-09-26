@@ -91,7 +91,7 @@ public class AuthControllerTests
            .Setup(u => u.FindByEmailAsync(dto.Email))
            .ReturnsAsync(new User
            {
-                 Id = Guid.NewGuid().ToString(),
+                 Id = Guid.NewGuid(),
                  Email = dto.Email,
                  UserName = dto.Email,
                  FullName = "Test User"

@@ -2,6 +2,7 @@
 {
     public class UserDto
     {
+        public Guid Id { get; set; }
         public string FullName { get; set; }     // Full name
         public string Email { get; set; }    // Email address
         public DateTime CreatedAt { get; set; } // Registration date

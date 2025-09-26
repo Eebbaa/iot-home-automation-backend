@@ -27,7 +27,7 @@ public class UsersControllerTests
         // Seed test data
         _context.Users.Add(new iot_home_automation_backend.Models.User
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = Guid.NewGuid(),
             FullName = "John Doe",
             Email = "john@example.com",
             CreatedAt = DateTime.UtcNow
@@ -56,7 +56,7 @@ public class UsersControllerTests
         var user = _context.Users.First();
 
         // Act
-        var result = await _controller.GetUser(user.Id);
+        var result = await _controller.GetUser(user.Id.ToString());
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -87,7 +87,7 @@ public class UsersControllerTests
         };
 
         // Act
-        var result = await _controller.UpdateUser(user.Id, dto);
+        var result = await _controller.UpdateUser(user.Id.ToString(), dto);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -108,7 +108,7 @@ public class UsersControllerTests
         };
 
         // Act
-        var result = await _controller.PatchUser(user.Id, dto);
+        var result = await _controller.PatchUser(user.Id.ToString(), dto);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -124,7 +124,7 @@ public class UsersControllerTests
         var user = _context.Users.First();
 
         // Act
-        var result = await _controller.DeleteUser(user.Id);
+        var result = await _controller.DeleteUser(user.Id.ToString());
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);

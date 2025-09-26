@@ -25,7 +25,8 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             try
             {
                 var users = await _context.Users.Select(u => new UserDto
-                {
+                {   
+                    Id = u.Id,
                     CreatedAt = u.CreatedAt,
                     Email = u.Email,
                     FullName = u.FullName
@@ -56,7 +57,9 @@ namespace iot_home_automation_backend.Controllers.API.Version1
                     return BadRequest();
                 }
 
-                var user = await _context.Users.Where(u => u.Id == id)
+
+                var guidId = Guid.Parse(id);   // Throws if invalid
+                var user = await _context.Users.Where(u => u.Id == guidId)
                     .Select(u => new UserDto
                     {
                         FullName = u.FullName,

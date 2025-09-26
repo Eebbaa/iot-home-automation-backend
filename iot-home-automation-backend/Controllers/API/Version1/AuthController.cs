@@ -17,8 +17,7 @@ namespace iot_home_automation_backend.Controllers.API.Version1
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
-        private UserManager<User> object1;
-        private SignInManager<User> object2;
+        
 
         public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
@@ -28,11 +27,6 @@ namespace iot_home_automation_backend.Controllers.API.Version1
 
         }
 
-        public AuthController(UserManager<User> object1, SignInManager<User> object2)
-        {
-            this.object1 = object1;
-            this.object2 = object2;
-        }
 
         // POST: api/v1/auth/register
         [HttpPost("register")]
@@ -44,6 +38,7 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             }
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 UserName = registerDto.Email,
                 Email = registerDto.Email,
                 FullName = registerDto.FullName,
@@ -85,7 +80,11 @@ namespace iot_home_automation_backend.Controllers.API.Version1
 
             //}
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            var token = await GenerateJwtToken(user);
+            if (user == null)
+            {
+                return Unauthorized(new AuthResponseDto { Message = "User not found" });
+            }
+            var token = GenerateJwtToken(user);
 
             return Ok(new AuthResponseDto
             {
@@ -163,7 +162,7 @@ namespace iot_home_automation_backend.Controllers.API.Version1
         }
 
 
-        private async Task<string> GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
             {   
@@ -191,10 +190,6 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
-
-
-        
-
 
     }
 }

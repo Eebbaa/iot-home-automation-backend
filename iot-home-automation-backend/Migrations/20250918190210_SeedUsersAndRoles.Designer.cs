@@ -12,8 +12,8 @@ using iot_home_automation_backend.Data;
 namespace iot_home_automation_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250904124606_IdentityUserFix")]
-    partial class IdentityUserFix
+    [Migration("20250918190210_SeedUsersAndRoles")]
+    partial class SeedUsersAndRoles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,11 @@ namespace iot_home_automation_backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -50,9 +51,23 @@ namespace iot_home_automation_backend.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("55ec2237-df2b-4156-b4a0-b63dfa2b8999"),
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("4232739d-3bd7-4a31-b23a-d84c240a53a7"),
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,9 +81,8 @@ namespace iot_home_automation_backend.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -77,7 +91,7 @@ namespace iot_home_automation_backend.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,9 +105,8 @@ namespace iot_home_automation_backend.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -102,7 +115,7 @@ namespace iot_home_automation_backend.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -113,9 +126,8 @@ namespace iot_home_automation_backend.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -124,25 +136,42 @@ namespace iot_home_automation_backend.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("2b2ea73f-f0b9-4f15-8bde-b92affe0bb8c"),
+                            RoleId = new Guid("55ec2237-df2b-4156-b4a0-b63dfa2b8999")
+                        },
+                        new
+                        {
+                            UserId = new Guid("4ae58efb-4b64-4866-91b7-9d7b59b85226"),
+                            RoleId = new Guid("4232739d-3bd7-4a31-b23a-d84c240a53a7")
+                        },
+                        new
+                        {
+                            UserId = new Guid("29252e9f-9d32-4dff-9fd1-808e06496528"),
+                            RoleId = new Guid("4232739d-3bd7-4a31-b23a-d84c240a53a7")
+                        });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -160,11 +189,9 @@ namespace iot_home_automation_backend.Migrations
 
             modelBuilder.Entity("iot_home_automation_backend.Models.Device", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -179,29 +206,24 @@ namespace iot_home_automation_backend.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Devices");
                 });
 
             modelBuilder.Entity("iot_home_automation_backend.Models.DeviceReading", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DeviceId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("DeviceId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -221,8 +243,9 @@ namespace iot_home_automation_backend.Migrations
 
             modelBuilder.Entity("iot_home_automation_backend.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -292,18 +315,74 @@ namespace iot_home_automation_backend.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("2b2ea73f-f0b9-4f15-8bde-b92affe0bb8c"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fa8abea3-39cf-4144-aa5b-deaa90dff5fb",
+                            CreatedAt = new DateTime(2025, 9, 18, 19, 2, 9, 82, DateTimeKind.Utc).AddTicks(2522),
+                            Email = "admin@iot.com",
+                            EmailConfirmed = true,
+                            FullName = "System Admin",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@IOT.COM",
+                            NormalizedUserName = "ADMIN@IOT.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH6aUiKwbcRInUXtDdheq/Og3AjTy1FZiFHp3zyPW1+0rWVtfjMTADFz9erVb/E/pQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "847f6e5b-20c3-405b-85d6-89939c52dbc9",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@iot.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("4ae58efb-4b64-4866-91b7-9d7b59b85226"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "7d17f40f-67df-4fcf-9086-92e4214e8566",
+                            CreatedAt = new DateTime(2025, 9, 18, 19, 2, 9, 144, DateTimeKind.Utc).AddTicks(9092),
+                            Email = "user1@iot.com",
+                            EmailConfirmed = true,
+                            FullName = "Normal User 1",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER1@IOT.COM",
+                            NormalizedUserName = "USER1@IOT.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHxsqcU/4fIkeWerfIp4jBiEs+qTXxy03Pbo4eeitBw1lnCVXHDjEy+3I7nykc5FAA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "806ec606-a9b9-48c8-a696-f82e39adce74",
+                            TwoFactorEnabled = false,
+                            UserName = "user1@iot.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("29252e9f-9d32-4dff-9fd1-808e06496528"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d6f47eef-5559-4c99-944e-d17ddb518d0a",
+                            CreatedAt = new DateTime(2025, 9, 18, 19, 2, 9, 214, DateTimeKind.Utc).AddTicks(8754),
+                            Email = "user2@iot.com",
+                            EmailConfirmed = true,
+                            FullName = "Normal User 2",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER2@IOT.COM",
+                            NormalizedUserName = "USER2@IOT.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBAj0VKVPDvXsGSm+6lzNkxZjZyw9IwxkPfqA6bZZSdYcy0ObXw/aMZfA8FOzd64kw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "9865908d-11c9-48be-841b-c5b592419b3f",
+                            TwoFactorEnabled = false,
+                            UserName = "user2@iot.com"
+                        });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.HasOne("iot_home_automation_backend.Models.User", null)
                         .WithMany()
@@ -312,7 +391,7 @@ namespace iot_home_automation_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.HasOne("iot_home_automation_backend.Models.User", null)
                         .WithMany()
@@ -321,9 +400,9 @@ namespace iot_home_automation_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -336,7 +415,7 @@ namespace iot_home_automation_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.HasOne("iot_home_automation_backend.Models.User", null)
                         .WithMany()
@@ -349,7 +428,9 @@ namespace iot_home_automation_backend.Migrations
                 {
                     b.HasOne("iot_home_automation_backend.Models.User", "User")
                         .WithMany("Devices")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
