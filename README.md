@@ -65,3 +65,7 @@ SQL Server or PostgreSQL
 Documentation for the project is on Confluence 
   - https://leiprojects2030.atlassian.net/wiki/x/DgCqAw
 
+Project Managment tool - Trello
+    - https://trello.com/invite/b/68ac4710c58c55f93acb53a9/ATTI7a9574ca752024c33ca5266cca76b6d48D14CA5F/iot-home-automation
+    
+
