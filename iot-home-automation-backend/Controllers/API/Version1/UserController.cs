@@ -25,7 +25,8 @@ namespace iot_home_automation_backend.Controllers.API.Version1
             try
             {
                 var users = await _context.Users.Select(u => new UserDto
-                {
+                {   
+                    Id = u.Id,
                     CreatedAt = u.CreatedAt,
                     Email = u.Email,
                     FullName = u.FullName
