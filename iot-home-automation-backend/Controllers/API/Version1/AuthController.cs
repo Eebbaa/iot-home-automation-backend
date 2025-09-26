@@ -80,7 +80,11 @@ namespace iot_home_automation_backend.Controllers.API.Version1
 
             //}
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            var token = await GenerateJwtToken(user);
+            if (user == null)
+            {
+                return Unauthorized(new AuthResponseDto { Message = "User not found" });
+            }
+            var token = GenerateJwtToken(user);
 
             return Ok(new AuthResponseDto
             {
@@ -158,7 +162,7 @@ namespace iot_home_automation_backend.Controllers.API.Version1
         }
 
 
-        private async Task<string> GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
             {   
